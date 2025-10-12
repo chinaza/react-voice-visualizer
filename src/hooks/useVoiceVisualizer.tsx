@@ -52,6 +52,7 @@ function useVoiceVisualizer({
   const rafRecordingRef = useRef<number | null>(null);
   const rafCurrentTimeUpdateRef = useRef<number | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const originalStreamsRef = useRef<MediaStream[]>([]);
 
   const isAvailableRecordedAudio = Boolean(
     bufferFromRecordedBlob && !isProcessingAudioOnComplete
@@ -104,7 +105,6 @@ function useVoiceVisualizer({
 
   const handleBeforeUnload = (e: BeforeUnloadEvent) => {
     e.preventDefault();
-    e.returnValue = '';
   };
 
   const processBlob = async (blob: Blob) => {
@@ -197,6 +197,9 @@ function useVoiceVisualizer({
         displayStream.getVideoTracks().forEach((track) => track.stop());
       }
 
+      // Store original streams for cleanup
+      originalStreamsRef.current = streams;
+
       // Merge streams if we have multiple, otherwise use the single stream
       if (streams.length > 1) {
         combinedStream = mergeAudioStreams(streams);
@@ -211,9 +214,8 @@ function useVoiceVisualizer({
       setAudioStream(combinedStream);
       audioContextRef.current = new window.AudioContext();
       analyserRef.current = audioContextRef.current.createAnalyser();
-      dataArrayRef.current = new Uint8Array(
-        analyserRef.current.frequencyBinCount
-      );
+      const bufferLength = analyserRef.current.frequencyBinCount;
+      dataArrayRef.current = new Uint8Array(new ArrayBuffer(bufferLength));
       sourceRef.current =
         audioContextRef.current.createMediaStreamSource(combinedStream);
       sourceRef.current.connect(analyserRef.current);
@@ -238,7 +240,8 @@ function useVoiceVisualizer({
 
   const recordingFrame = () => {
     analyserRef.current!.getByteTimeDomainData(dataArrayRef.current!);
-    setAudioData(new Uint8Array(dataArrayRef.current!));
+    const currentData = dataArrayRef.current!;
+    setAudioData(Uint8Array.from(currentData));
     rafRecordingRef.current = requestAnimationFrame(recordingFrame);
   };
 
@@ -263,7 +266,7 @@ function useVoiceVisualizer({
     if (isRecordingInProgress || isProcessingStartRecording) return;
 
     if (!isCleared) clearCanvas();
-    getUserMedia();
+    void getUserMedia();
   };
 
   const stopRecording = () => {
@@ -277,7 +280,16 @@ function useVoiceVisualizer({
         handleDataAvailable
       );
     }
+
+    // Stop all tracks from the combined stream
     audioStream?.getTracks().forEach((track) => track.stop());
+
+    // Stop all tracks from original streams (important for screen sharing indicator)
+    originalStreamsRef.current.forEach((stream) => {
+      stream.getTracks().forEach((track) => track.stop());
+    });
+    originalStreamsRef.current = [];
+
     if (rafRecordingRef.current) cancelAnimationFrame(rafRecordingRef.current);
     if (sourceRef.current) sourceRef.current.disconnect();
     if (audioContextRef.current && audioContextRef.current.state !== 'closed') {
@@ -307,7 +319,15 @@ function useVoiceVisualizer({
       mediaRecorderRef.current = null;
     }
 
+    // Stop all tracks from the combined stream
     audioStream?.getTracks().forEach((track) => track.stop());
+
+    // Stop all tracks from original streams (important for screen sharing indicator)
+    originalStreamsRef.current.forEach((stream) => {
+      stream.getTracks().forEach((track) => track.stop());
+    });
+    originalStreamsRef.current = [];
+
     if (audioRef?.current) {
       audioRef.current.removeEventListener('ended', onEndedRecordedAudio);
       audioRef.current.pause();
