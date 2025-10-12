@@ -1,4 +1,4 @@
-import { Dispatch, MutableRefObject, SetStateAction } from "react";
+import { Dispatch, MutableRefObject, SetStateAction } from 'react';
 
 export interface BarItem {
   startY: number;
@@ -108,6 +108,8 @@ export type GetBarsDataParams = {
   gap: number;
 };
 
+export type AudioSourceType = 'user' | 'display' | 'both';
+
 export interface useVoiceVisualizerParams {
   onStartRecording?: () => void;
   onStopRecording?: () => void;
@@ -120,6 +122,7 @@ export interface useVoiceVisualizerParams {
   onResumedAudioPlayback?: () => void;
   onErrorPlayingAudio?: (error: Error) => void;
   shouldHandleBeforeUnload?: boolean;
+  audioSource?: AudioSourceType;
 }
 
 export interface UseWebWorkerParams<T> {

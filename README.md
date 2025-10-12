@@ -1,4 +1,4 @@
-# react-voice-visualizer 
+# react-voice-visualizer
 
 # [Demo App](https://react-voice-visualizer.vercel.app/)
 
@@ -10,7 +10,7 @@ The `react-voice-visualizer` library offers a comprehensive and highly customiza
 
 Experience the [Demo App: Click here to explore the react-voice-visualizer](https://react-voice-visualizer.vercel.app/). Try it out and see it in action!
 
-### Key Features:
+### Key Features
 
 - **Audio Recording**: Easily capture audio recordings with minimal setup using React hook and component.
 
@@ -39,12 +39,16 @@ yarn add react-voice-visualizer
 ## Version 2.x.x Release Notes
 
 **Breaking Changes:**
+
 - Ref Handling Update: In this version, the library has been enhanced to manage audio references (audioRef) internally. Users no longer need to pass ref={audioRef} separately to components. This change offers a more seamless and intuitive experience.
 
 **New Features:**
+
 - Preloaded Audio Blob Support: Version 2.x.x introduces the capability to set preloaded audio blobs. Users now have the flexibility to load audio blobs from various sources, such as user inputs or files using `setPreloadedAudioBlob` function, expanding the library's versatility in different scenarios.
+- Audio Source Selection: Support for recording from microphone (`'user'`), screen audio (`'display'`), or both merged simultaneously (`'both'`).
 
 ## [Demo App](https://react-voice-visualizer.vercel.app/)
+
 For a live demonstration of the React Voice Visualizer library, you can check out the [Demo Voice Visualizer App](https://react-voice-visualizer.vercel.app/). This app showcases various features and functionalities of the library in action.
 
 Feel free to explore the demo app to see how the **React Voice Visualizer** can be used in different scenarios. You can refer to the source code of the demo app for additional examples and inspiration for using the library effectively.
@@ -55,35 +59,33 @@ To start using the VoiceVisualizer component, you will need to import the necess
 Here's an example of how to use this library in your `App` component:
 
 ```typescript jsx
-import { useEffect } from "react";
-import { useVoiceVisualizer, VoiceVisualizer } from "react-voice-visualizer";
+import { useEffect } from 'react';
+import { useVoiceVisualizer, VoiceVisualizer } from 'react-voice-visualizer';
 
 const App = () => {
-    // Initialize the recorder controls using the hook
-    const recorderControls = useVoiceVisualizer();
-    const {
-        // ... (Extracted controls and states, if necessary)
-        recordedBlob,
-        error,
-    } = recorderControls;
+  // Initialize the recorder controls using the hook
+  const recorderControls = useVoiceVisualizer();
+  const {
+    // ... (Extracted controls and states, if necessary)
+    recordedBlob,
+    error,
+  } = recorderControls;
 
-    // Get the recorded audio blob
-    useEffect(() => {
-        if (!recordedBlob) return;
+  // Get the recorded audio blob
+  useEffect(() => {
+    if (!recordedBlob) return;
 
-        console.log(recordedBlob);
-    }, [recordedBlob]);
+    console.log(recordedBlob);
+  }, [recordedBlob]);
 
-    // Get the error when it occurs
-    useEffect(() => {
-        if (!error) return;
+  // Get the error when it occurs
+  useEffect(() => {
+    if (!error) return;
 
-        console.error(error);
-    }, [error]);
+    console.error(error);
+  }, [error]);
 
-    return (
-        <VoiceVisualizer controls={recorderControls} />
-    );
+  return <VoiceVisualizer controls={recorderControls} />;
 };
 
 export default App;
@@ -98,6 +100,44 @@ export default App;
 5. Use the provided buttons to start, pause, stop, and save the audio recording.
 
 Remember to include necessary CSS styles to customize the components and buttons according to your design preferences.
+
+## Audio Source Configuration
+
+The library supports three different audio source types for recording:
+
+### 1. User Media (Microphone) - Default
+
+```typescript jsx
+const recorderControls = useVoiceVisualizer({
+  audioSource: 'user', // or omit this (default)
+});
+```
+
+### 2. Display Media (Screen Audio)
+
+```typescript jsx
+const recorderControls = useVoiceVisualizer({
+  audioSource: 'display',
+});
+```
+
+### 3. Both Sources Merged
+
+```typescript jsx
+const recorderControls = useVoiceVisualizer({
+  audioSource: 'both', // Records both microphone and screen audio simultaneously
+});
+```
+
+**Use Cases:**
+
+- **`'user'`**: Voice memos, podcasts, voice notes
+- **`'display'`**: Recording system audio, capturing audio from videos or presentations
+- **`'both'`**: Tutorial recordings, webinars with presenter voice and shared content audio, screen recordings with voiceover
+
+For detailed examples and usage instructions, see [AUDIO_SOURCE_EXAMPLE.md](./AUDIO_SOURCE_EXAMPLE.md).
+
+**Note**: Both `getUserMedia` and `getDisplayMedia` require user permission and only work on secure contexts (HTTPS or localhost).
 
 ## API Reference
 
@@ -114,7 +154,7 @@ const recorderControls = useVoiceVisualizer();
 ##### Parameters (All parameters are optional)
 
 | Parameter                  | Type                     | Description                                                                                                                                               |
-|:---------------------------|:-------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------|
+| :------------------------- | :----------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `onStartRecording`         | `() => void`             | Callback function triggered when recording starts.                                                                                                        |
 | `onStopRecording`          | `() => void`             | Callback function triggered when recording stops.                                                                                                         |
 | `onPausedRecording`        | `() => void`             | Callback function triggered when recording is paused.                                                                                                     |
@@ -126,11 +166,12 @@ const recorderControls = useVoiceVisualizer();
 | `onResumedAudioPlayback`   | `() => void`             | Callback function triggered when audio playback is resumed.                                                                                               |
 | `onErrorPlayingAudio`      | `(error: Error) => void` | Callback function is invoked when an error occurs during the execution of `audio.play()`. It provides an opportunity to handle and respond to such error. |
 | `shouldHandleBeforeUnload` | `boolean`                | Determines whether the `beforeunload` event handler should be added to the window, preventing page unload if necessary (`true` by default).               |
+| `audioSource`              | `AudioSourceType`        | Specifies the audio source for recording: `'user'` (microphone - default), `'display'` (screen audio), or `'both'` (merged microphone and screen audio).  |
 
 ##### Returns
 
 | Returns                             | Type                                                | Description                                                                                                                                                                                                                                                                                                                                                                             |
-|:------------------------------------|:----------------------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| :---------------------------------- | :-------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `audioRef`                          | `MutableRefObject`<br/>`<HTMLAudioElement \| null>` | Reference to the audio element used for playback.                                                                                                                                                                                                                                                                                                                                       |
 | `isRecordingInProgress`             | `boolean`                                           | Indicates if audio recording is currently in progress.                                                                                                                                                                                                                                                                                                                                  |
 | `isPausedRecording`                 | `boolean`                                           | Indicates if audio recording is currently paused.                                                                                                                                                                                                                                                                                                                                       |
@@ -171,38 +212,37 @@ A component that visualizes the real-time audio wave during recording.
 
 ### Props for AudioVisualizer Component
 
-| Props                                             | Description                                                                                                                                                                                                                                                                     | Default       | Type                         |
-|:--------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------|:-----------------------------|
-| **`controls`**                                    | Provides the audio recording controls and states required for visualization.                                                                                                                                                                                                    | -             | `Controls` (Required)        |
-| **`height`**                                      | The height of the visualization canvas.                                                                                                                                                                                                                                         | `200`         | `string \| number` (Optional)          |
-| **`width`**                                       | The width of the visualization canvas.                                                                                                                                                                                                                                          | `100%`        | `string \| number` (Optional) |
-| **`backgroundColor`**                             | The background color of the visualization canvas.                                                                                                                                                                                                                               | `transparent` | `string` (Optional)          |
-| **`mainBarColor`**                                | The color of the main audio wave line.                                                                                                                                                                                                                                          | `#FFFFFF`     | `string` (Optional)          |
-| **`secondaryBarColor`**                           | The secondary color of the audio wave line.                                                                                                                                                                                                                                     | `#5e5e5e`     | `string` (Optional)          |
-| **`speed`**                                       | The speed of the audio visualization animation (Integer from 1 to 6, higher number is slower).                                                                                                                                                                                  | `3`           | `number` (Optional)          |
-| **`barWidth`**                                    | The width of each audio wave bar.                                                                                                                                                                                                                                               | `2`           | `number` (Optional)          |
-| **`gap`**                                         | The gap between each audio wave bar.                                                                                                                                                                                                                                            | `1`           | `number` (Optional)          |
-| **`rounded`**                                     | The border radius of the audio wave bars.                                                                                                                                                                                                                                       | `5`           | `number` (Optional)          |
-| **`isControlPanelShown`**                         | Whether to display the audio control panel, including features such as recorded audio duration, current recording time, and control buttons. If you want to create your own UI, set it to false and utilize functions from the useVoiceVisualizer hook to manage audio control. | `true`         | `boolean` (Optional)         |
-| **`isDownloadAudioButtonShown`**                  | Whether to display the Download audio button.                                                                                                                                                                                                                                   | `false`       | `boolean` (Optional)         |
-| **`fullscreen`**                                  | Whether the visualization should be displayed in fullscreen mode. It begins from the center by default.                                                                                                                                                                         | `false`       | `boolean` (Optional)         |
-| **`animateCurrentPick`**                          | Whether to animate the current pick in the visualization.                                                                                                                                                                                                                       | `true`        | `boolean` (Optional)         |
-| **`onlyRecording`**                               | Whether to show the visualization only during voice recording.                                                                                                                                                                                                                  | `false`       | `boolean` (Optional)         |
-| **`isDefaultUIShown`**                            | Whether to show a default UI on Canvas before recording. If you want to create your own UI, set it to false.                                                                                                                                                                    | `true`        | `boolean` (Optional)         |
-| **`mainContainerClassName`**                      | The CSS class name for the main container.                                                                                                                                                                                                          | -             | `string` (Optional)          |
-| **`canvasContainerClassName`**                    | The CSS class name for the container of the visualization canvas.                                                                                                                                                                                                               | -             | `string` (Optional)          |
-| **`isProgressIndicatorShown`**                    | Whether to show the progress indicator after recording.                                                                                                                                                                                                                         | `true`        | `boolean` (Optional)         |
-| **`progressIndicatorClassName`**                  | The CSS class name for the progress indicator.                                                                                                                                                                                                                                  | -             | `string` (Optional)          |
-| **`isProgressIndicatorTimeShown`**                | Whether to show the progress indicator time.                                                                                                                                                                                                                                    | `true`        | `boolean` (Optional)         |
-| **`progressIndicatorTimeClassName`**              | The CSS class name for the progress indicator with time.                                                                                                                                                                                                                        | -             | `string` (Optional)          |
-| **`isProgressIndicatorOnHoverShown`**             | Whether to show the progress indicator on hover.                                                                                                                                                                                                                                | `true`        | `boolean` (Optional)         |
-| **`progressIndicatorOnHoverClassName`**           | The CSS class name for the progress indicator on hover.                                                                                                                                                                                                                         | -             | `string` (Optional)          |
-| **`isProgressIndicatorTimeOnHoverShown`**         | Whether to show the progress indicator time on hover.                                                                                                                                                                                                                           | `true`        | `boolean` (Optional)         |
-| **`progressIndicatorTimeOnHoverClassName`**       | The CSS class name for the progress indicator with time on hover.                                                                                                                                                                                                               | -             | `string` (Optional)          |
-| **`isAudioProcessingTextShown`**                  | Whether to show the audio processing text.                                                                                                                                                                                                                                      | `true`        | `boolean` (Optional)         |
-| **`audioProcessingTextClassName`**                | The CSS class name for the audio processing text.                                                                                                                                                                                                                               | -             | `string` (Optional)          |
-| **`controlButtonsClassName`**                     | The CSS class name for the Clear Button and Download Audio button components.                                                                                                                                                                                                   | -             | `string` (Optional)          |
-
+| Props                                       | Description                                                                                                                                                                                                                                                                     | Default       | Type                          |
+| :------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :------------ | :---------------------------- |
+| **`controls`**                              | Provides the audio recording controls and states required for visualization.                                                                                                                                                                                                    | -             | `Controls` (Required)         |
+| **`height`**                                | The height of the visualization canvas.                                                                                                                                                                                                                                         | `200`         | `string \| number` (Optional) |
+| **`width`**                                 | The width of the visualization canvas.                                                                                                                                                                                                                                          | `100%`        | `string \| number` (Optional) |
+| **`backgroundColor`**                       | The background color of the visualization canvas.                                                                                                                                                                                                                               | `transparent` | `string` (Optional)           |
+| **`mainBarColor`**                          | The color of the main audio wave line.                                                                                                                                                                                                                                          | `#FFFFFF`     | `string` (Optional)           |
+| **`secondaryBarColor`**                     | The secondary color of the audio wave line.                                                                                                                                                                                                                                     | `#5e5e5e`     | `string` (Optional)           |
+| **`speed`**                                 | The speed of the audio visualization animation (Integer from 1 to 6, higher number is slower).                                                                                                                                                                                  | `3`           | `number` (Optional)           |
+| **`barWidth`**                              | The width of each audio wave bar.                                                                                                                                                                                                                                               | `2`           | `number` (Optional)           |
+| **`gap`**                                   | The gap between each audio wave bar.                                                                                                                                                                                                                                            | `1`           | `number` (Optional)           |
+| **`rounded`**                               | The border radius of the audio wave bars.                                                                                                                                                                                                                                       | `5`           | `number` (Optional)           |
+| **`isControlPanelShown`**                   | Whether to display the audio control panel, including features such as recorded audio duration, current recording time, and control buttons. If you want to create your own UI, set it to false and utilize functions from the useVoiceVisualizer hook to manage audio control. | `true`        | `boolean` (Optional)          |
+| **`isDownloadAudioButtonShown`**            | Whether to display the Download audio button.                                                                                                                                                                                                                                   | `false`       | `boolean` (Optional)          |
+| **`fullscreen`**                            | Whether the visualization should be displayed in fullscreen mode. It begins from the center by default.                                                                                                                                                                         | `false`       | `boolean` (Optional)          |
+| **`animateCurrentPick`**                    | Whether to animate the current pick in the visualization.                                                                                                                                                                                                                       | `true`        | `boolean` (Optional)          |
+| **`onlyRecording`**                         | Whether to show the visualization only during voice recording.                                                                                                                                                                                                                  | `false`       | `boolean` (Optional)          |
+| **`isDefaultUIShown`**                      | Whether to show a default UI on Canvas before recording. If you want to create your own UI, set it to false.                                                                                                                                                                    | `true`        | `boolean` (Optional)          |
+| **`mainContainerClassName`**                | The CSS class name for the main container.                                                                                                                                                                                                                                      | -             | `string` (Optional)           |
+| **`canvasContainerClassName`**              | The CSS class name for the container of the visualization canvas.                                                                                                                                                                                                               | -             | `string` (Optional)           |
+| **`isProgressIndicatorShown`**              | Whether to show the progress indicator after recording.                                                                                                                                                                                                                         | `true`        | `boolean` (Optional)          |
+| **`progressIndicatorClassName`**            | The CSS class name for the progress indicator.                                                                                                                                                                                                                                  | -             | `string` (Optional)           |
+| **`isProgressIndicatorTimeShown`**          | Whether to show the progress indicator time.                                                                                                                                                                                                                                    | `true`        | `boolean` (Optional)          |
+| **`progressIndicatorTimeClassName`**        | The CSS class name for the progress indicator with time.                                                                                                                                                                                                                        | -             | `string` (Optional)           |
+| **`isProgressIndicatorOnHoverShown`**       | Whether to show the progress indicator on hover.                                                                                                                                                                                                                                | `true`        | `boolean` (Optional)          |
+| **`progressIndicatorOnHoverClassName`**     | The CSS class name for the progress indicator on hover.                                                                                                                                                                                                                         | -             | `string` (Optional)           |
+| **`isProgressIndicatorTimeOnHoverShown`**   | Whether to show the progress indicator time on hover.                                                                                                                                                                                                                           | `true`        | `boolean` (Optional)          |
+| **`progressIndicatorTimeOnHoverClassName`** | The CSS class name for the progress indicator with time on hover.                                                                                                                                                                                                               | -             | `string` (Optional)           |
+| **`isAudioProcessingTextShown`**            | Whether to show the audio processing text.                                                                                                                                                                                                                                      | `true`        | `boolean` (Optional)          |
+| **`audioProcessingTextClassName`**          | The CSS class name for the audio processing text.                                                                                                                                                                                                                               | -             | `string` (Optional)           |
+| **`controlButtonsClassName`**               | The CSS class name for the Clear Button and Download Audio button components.                                                                                                                                                                                                   | -             | `string` (Optional)           |
 
 ## License
 
