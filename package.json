@@ -1,12 +1,15 @@
 {
-  "name": "@chinaza/audio-recorder",
+  "name": "@chinaza/react-voice-visualizer",
   "private": false,
-  "version": "2.1.1",
+  "version": "2.1.2",
   "type": "module",
   "author": "Yurii Zarytskyi",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/YZarytskyi/react-voice-visualizer.git"
+    "url": "https://github.com/chinaza/react-voice-visualizer.git"
   },
   "description": "React library for audio recording and visualization using Web Audio API",
   "license": "MIT",
