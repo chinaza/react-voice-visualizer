@@ -178,15 +178,7 @@ function useVoiceVisualizer({
       if (audioSource === 'display' || audioSource === 'both') {
         const displayStream = await navigator.mediaDevices.getDisplayMedia({
           audio: true,
-          video: {
-            displaySurface: 'browser', // Restrict to browser tabs only
-          },
-          // @ts-ignore
-          preferCurrentTab: false,
-          // @ts-ignore
-          surfaceSwitching: 'exclude', // Prevent switching to other surface types
-          // @ts-ignore
-          selfBrowserSurface: 'exclude', // Exclude the current tab
+          video: true,
         });
 
         // Extract only audio tracks from display stream
