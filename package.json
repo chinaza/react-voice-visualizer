@@ -58,21 +58,21 @@
     "prepare": "npm run build"
   },
   "peerDependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
   },
   "devDependencies": {
-    "@types/node": "^20.14.2",
-    "@types/react": "^18.2.14",
-    "@types/react-dom": "^18.2.6",
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
     "@typescript-eslint/eslint-plugin": "^6.6.0",
     "@typescript-eslint/parser": "^6.6.0",
-    "@vitejs/plugin-react": "^4.0.1",
+    "@vitejs/plugin-react": "^5.1.1",
     "eslint": "^8.44.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.1",
     "prettier": "^3.0.0",
-    "typescript": "^5.0.2",
+    "typescript": "^5.9.3",
     "vite": "^4.4.0",
     "vite-plugin-css-injected-by-js": "^3.3.0",
     "vite-plugin-dts": "^3.5.3"
